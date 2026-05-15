@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import type { StringValue } from 'ms';
 import { ProductsModule } from '../products/products.module';
+import { UsersModule } from '../users/users.module';
 import { AdminAuthController } from './admin-auth.controller';
 import { AdminAuthService } from './admin-auth.service';
 import { AdminProductsController } from './admin-products.controller';
@@ -24,6 +25,7 @@ import { JwtStrategy } from './jwt.strategy';
       }),
     }),
     ProductsModule,
+    UsersModule,
   ],
   controllers: [AdminAuthController, AdminProductsController],
   providers: [AdminAuthService, JwtStrategy],
