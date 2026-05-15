@@ -19,4 +19,13 @@ export class Product {
 
   @Column({ type: 'text' })
   image: string;
+
+  @Column({ type: 'text', default: '' })
+  description: string;
+
+  @Column({ type: 'json', nullable: true })
+  specifications: string[] | null;
+
+  @Column({ type: 'json', nullable: true })
+  sizes: string[] | null;
 }

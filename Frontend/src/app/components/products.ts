@@ -1,7 +1,9 @@
+import { PRODUCT_LIST_DEFAULTS } from '../../lib/productDisplayDefaults';
 import { Product } from './CartContext';
 
 export const products: Product[] = [
   {
+    ...PRODUCT_LIST_DEFAULTS,
     id: '1',
     name: 'Shadow Pullover',
     price: 4500,
@@ -10,6 +12,7 @@ export const products: Product[] = [
     image: 'https://picsum.photos/600/800?grayscale&random=10',
   },
   {
+    ...PRODUCT_LIST_DEFAULTS,
     id: '2',
     name: 'Asphalt Zip',
     price: 5200,
@@ -18,6 +21,7 @@ export const products: Product[] = [
     image: 'https://picsum.photos/600/800?grayscale&random=11',
   },
   {
+    ...PRODUCT_LIST_DEFAULTS,
     id: '3',
     name: 'Crimson Oversized',
     price: 6500,
@@ -26,6 +30,7 @@ export const products: Product[] = [
     image: 'https://picsum.photos/600/800?grayscale&random=12',
   },
   {
+    ...PRODUCT_LIST_DEFAULTS,
     id: '4',
     name: 'Phantom Hood',
     price: 5800,
@@ -34,6 +39,7 @@ export const products: Product[] = [
     image: 'https://picsum.photos/600/800?grayscale&random=13',
   },
   {
+    ...PRODUCT_LIST_DEFAULTS,
     id: '5',
     name: 'Stealth Zip Hood',
     price: 4800,
@@ -42,6 +48,7 @@ export const products: Product[] = [
     image: 'https://picsum.photos/600/800?grayscale&random=14',
   },
   {
+    ...PRODUCT_LIST_DEFAULTS,
     id: '6',
     name: 'Street Noir Limited',
     price: 7500,
@@ -50,6 +57,7 @@ export const products: Product[] = [
     image: 'https://picsum.photos/600/800?grayscale&random=15',
   },
   {
+    ...PRODUCT_LIST_DEFAULTS,
     id: '7',
     name: 'Urban Pullover',
     price: 4200,
@@ -58,6 +66,7 @@ export const products: Product[] = [
     image: 'https://picsum.photos/600/800?grayscale&random=16',
   },
   {
+    ...PRODUCT_LIST_DEFAULTS,
     id: '8',
     name: 'Velocity Zip',
     price: 5500,
@@ -66,6 +75,7 @@ export const products: Product[] = [
     image: 'https://picsum.photos/600/800?grayscale&random=17',
   },
   {
+    ...PRODUCT_LIST_DEFAULTS,
     id: '9',
     name: 'Eclipse Rare',
     price: 8200,

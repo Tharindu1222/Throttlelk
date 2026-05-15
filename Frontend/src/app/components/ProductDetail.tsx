@@ -1,9 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Minus, Plus } from 'lucide-react';
 import { Product, useCart } from './CartContext';
-
-const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
 
 interface ProductDetailProps {
   product: Product | null;
@@ -17,11 +15,16 @@ export default function ProductDetail({ product, isOpen, onClose }: ProductDetai
   const [quantity, setQuantity] = useState(1);
   const { dispatch } = useCart();
 
-  if (!product) return null;
+  useEffect(() => {
+    if (!product) return;
+    const firstColor = product.colors[0] ?? '';
+    setSelectedColor(firstColor);
+    const firstSize = product.sizes[0] ?? 'M';
+    setSelectedSize(firstSize);
+    setQuantity(1);
+  }, [product?.id]);
 
-  if (selectedColor === '' && product.colors.length > 0) {
-    setSelectedColor(product.colors[0]);
-  }
+  if (!product) return null;
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
@@ -122,12 +125,10 @@ export default function ProductDetail({ product, isOpen, onClose }: ProductDetai
                   </p>
 
                   <p
-                    className="text-[#F0EDE8]/80 mb-8 leading-relaxed"
+                    className="text-[#F0EDE8]/80 mb-8 leading-relaxed whitespace-pre-wrap"
                     style={{ fontFamily: "'DM Sans', sans-serif" }}
                   >
-                    Premium quality streetwear hoodie crafted from heavyweight cotton blend.
-                    Features oversized fit, reinforced stitching, and a bold design that makes a statement.
-                    Perfect for those who refuse to blend in.
+                    {product.description}
                   </p>
 
                   {/* Color Selection */}
@@ -138,7 +139,7 @@ export default function ProductDetail({ product, isOpen, onClose }: ProductDetai
                     >
                       Select Color
                     </h3>
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 flex-wrap">
                       {product.colors.map((color) => (
                         <motion.button
                           key={color}
@@ -173,8 +174,8 @@ export default function ProductDetail({ product, isOpen, onClose }: ProductDetai
                     >
                       Select Size
                     </h3>
-                    <div className="flex gap-3">
-                      {sizes.map((size) => (
+                    <div className="flex gap-3 flex-wrap">
+                      {product.sizes.map((size) => (
                         <motion.button
                           key={size}
                           onClick={() => setSelectedSize(size)}
@@ -241,11 +242,9 @@ export default function ProductDetail({ product, isOpen, onClose }: ProductDetai
                       className="space-y-2 text-[#F0EDE8]/70"
                       style={{ fontFamily: "'DM Sans', sans-serif" }}
                     >
-                      <li>• Material: 80% Cotton, 20% Polyester</li>
-                      <li>• Weight: 400 GSM heavyweight fabric</li>
-                      <li>• Fit: Oversized streetwear fit</li>
-                      <li>• Origin: Made in Sri Lanka</li>
-                      <li>• Care: Machine wash cold, hang dry</li>
+                      {product.specifications.map((line, i) => (
+                        <li key={`${product.id}-spec-${i}`}>• {line}</li>
+                      ))}
                     </ul>
                   </div>
 

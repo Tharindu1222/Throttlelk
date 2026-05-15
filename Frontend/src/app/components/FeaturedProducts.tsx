@@ -5,6 +5,7 @@ import ProductDetail from './ProductDetail';
 import { products as staticProducts } from './products';
 import { Product } from './CartContext';
 import { API_BASE } from '../../lib/api';
+import { mergeProductListItem } from '../../lib/productDisplayDefaults';
 
 const categories = ['All', 'Zip-up', 'Non Zip', 'Limited Edition'];
 
@@ -23,9 +24,9 @@ export default function FeaturedProducts() {
         if (!res.ok) {
           throw new Error('bad status');
         }
-        const data = (await res.json()) as Product[];
+        const raw = (await res.json()) as Parameters<typeof mergeProductListItem>[0][];
         if (!cancelled) {
-          setCatalog(data);
+          setCatalog(raw.map((row) => mergeProductListItem(row)));
           setCatalogNote(null);
         }
       } catch {

@@ -1,4 +1,10 @@
-import { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useReducer,
+  type Dispatch,
+  type ReactNode,
+} from 'react';
 
 export interface Product {
   id: string;
@@ -7,6 +13,12 @@ export interface Product {
   category: string;
   colors: string[];
   image: string;
+  /** Long copy on product detail */
+  description: string;
+  /** Bullet lines (without leading •) */
+  specifications: string[];
+  /** Order preserved for size picker */
+  sizes: string[];
 }
 
 export interface CartItem extends Product {
@@ -29,7 +41,7 @@ type CartAction =
 
 const CartContext = createContext<{
   state: CartState;
-  dispatch: React.Dispatch<CartAction>;
+  dispatch: Dispatch<CartAction>;
 } | undefined>(undefined);
 
 function cartReducer(state: CartState, action: CartAction): CartState {

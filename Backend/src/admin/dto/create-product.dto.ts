@@ -3,6 +3,7 @@ import {
   ArrayMinSize,
   IsArray,
   IsInt,
+  IsOptional,
   IsString,
   MaxLength,
   Min,
@@ -29,4 +30,20 @@ export class CreateProductDto {
 
   @IsString()
   image: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(12000)
+  description?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  specifications?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsString({ each: true })
+  sizes?: string[];
 }

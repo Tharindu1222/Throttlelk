@@ -2,11 +2,13 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiFetch } from '../../lib/api';
+import { PRODUCT_LIST_DEFAULTS } from '../../lib/productDisplayDefaults';
 import type { Product } from '../components/CartContext';
 import { useAdminAuth } from './AdminAuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
 import {
   Table,
   TableBody,
@@ -39,6 +41,20 @@ function colorsToInput(colors: string[]): string {
   return colors.join(', ');
 }
 
+function parseSpecsRaw(raw: string): string[] {
+  return raw
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+}
+
+function parseSizesRaw(raw: string): string[] {
+  return raw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
 function parseColorsInput(raw: string): string[] {
   return raw
     .split(',')
@@ -59,6 +75,9 @@ export default function AdminProductsPage() {
   const [category, setCategory] = useState<string>(CATEGORIES[0]);
   const [colorsRaw, setColorsRaw] = useState('#0A0A0A, #2C2C2C');
   const [image, setImage] = useState('');
+  const [description, setDescription] = useState('');
+  const [specsRaw, setSpecsRaw] = useState('');
+  const [sizesRaw, setSizesRaw] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -92,6 +111,9 @@ export default function AdminProductsPage() {
     setCategory(CATEGORIES[0]);
     setColorsRaw('#0A0A0A, #2C2C2C');
     setImage('');
+    setDescription(PRODUCT_LIST_DEFAULTS.description);
+    setSpecsRaw(PRODUCT_LIST_DEFAULTS.specifications.join('\n'));
+    setSizesRaw(PRODUCT_LIST_DEFAULTS.sizes.join(', '));
     setDialogOpen(true);
   }
 
@@ -102,6 +124,9 @@ export default function AdminProductsPage() {
     setCategory(p.category);
     setColorsRaw(colorsToInput(p.colors));
     setImage(p.image);
+    setDescription(p.description);
+    setSpecsRaw(p.specifications.join('\n'));
+    setSizesRaw(p.sizes.join(', '));
     setDialogOpen(true);
   }
 
@@ -116,12 +141,21 @@ export default function AdminProductsPage() {
       toast.error('Price must be a non-negative whole number');
       return;
     }
+    const specifications = parseSpecsRaw(specsRaw);
+    const sizes = parseSizesRaw(sizesRaw);
+    if (sizes.length < 1) {
+      toast.error('Add at least one size (comma-separated, e.g. S, M, L, XL)');
+      return;
+    }
     const body = {
       name: name.trim(),
       price: priceNum,
-      category,
+      category: category.trim(),
       colors,
       image: image.trim(),
+      description: description.trim(),
+      specifications,
+      sizes,
     };
     if (!body.name || !body.image) {
       toast.error('Name and image URL are required');
@@ -290,7 +324,7 @@ export default function AdminProductsPage() {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-[#141414] border-[#2C2C2C] text-[#F0EDE8] max-h-[90vh] overflow-y-auto sm:max-w-lg">
+        <DialogContent className="bg-[#141414] border-[#2C2C2C] text-[#F0EDE8] max-h-[90vh] overflow-y-auto sm:max-w-2xl">
           <DialogHeader>
             <DialogTitle style={{ fontFamily: "'Bebas Neue', sans-serif" }}>
               {editing ? 'Edit product' : 'New product'}
@@ -318,17 +352,18 @@ export default function AdminProductsPage() {
             </div>
             <div className="space-y-2">
               <Label>Category</Label>
-              <select
-                className="w-full h-9 rounded-md border border-[#2C2C2C] bg-[#0A0A0A] px-3 text-sm text-[#F0EDE8]"
+              <Input
+                list="tlk-admin-categories"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-              >
+                className="bg-[#0A0A0A] border-[#2C2C2C] text-[#F0EDE8]"
+                placeholder="e.g. Zip-up, Non Zip, Limited Edition"
+              />
+              <datalist id="tlk-admin-categories">
                 {CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
+                  <option key={c} value={c} />
                 ))}
-              </select>
+              </datalist>
             </div>
             <div className="space-y-2">
               <Label>Colors (comma-separated hex)</Label>
@@ -344,6 +379,33 @@ export default function AdminProductsPage() {
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
                 className="bg-[#0A0A0A] border-[#2C2C2C] text-[#F0EDE8]"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={5}
+                className="bg-[#0A0A0A] border-[#2C2C2C] text-[#F0EDE8] resize-y min-h-[100px]"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Specifications (one line each)</Label>
+              <Textarea
+                value={specsRaw}
+                onChange={(e) => setSpecsRaw(e.target.value)}
+                rows={6}
+                className="bg-[#0A0A0A] border-[#2C2C2C] text-[#F0EDE8] font-mono text-sm resize-y min-h-[120px]"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Sizes (comma-separated)</Label>
+              <Input
+                value={sizesRaw}
+                onChange={(e) => setSizesRaw(e.target.value)}
+                className="bg-[#0A0A0A] border-[#2C2C2C] font-mono text-sm text-[#F0EDE8]"
+                placeholder="S, M, L, XL, XXL"
               />
             </div>
           </div>
