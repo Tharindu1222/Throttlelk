@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router';
+import { useState } from 'react';
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'motion/react';
 import { ShoppingBag, Menu, X } from 'lucide-react';
 import { useCart } from './CartContext';
@@ -71,20 +70,6 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
-              className="px-2"
-            >
-              <Link
-                to="/admin/login"
-                className="text-xs uppercase tracking-widest text-[#F0EDE8]/50 hover:text-[#C0392B] transition-colors"
-                style={{ fontFamily: "'DM Sans', sans-serif" }}
-              >
-                Admin
-              </Link>
-            </motion.div>
             {navLinks.map((link, i) => (
               <motion.a
                 key={link.name}
@@ -93,7 +78,7 @@ export default function Navbar() {
                 style={{ fontFamily: "'DM Sans', sans-serif" }}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * (i + 2) }}
+                transition={{ delay: 0.1 * (i + 1) }}
                 whileHover={{ scale: 1.05 }}
               >
                 <span className="relative z-10 transition-colors group-hover:text-[#C0392B]">
@@ -195,20 +180,6 @@ export default function Navbar() {
             className="md:hidden bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-[#C0392B]/30 overflow-hidden"
           >
             <div className="px-6 py-6 space-y-1">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="px-4 py-2"
-              >
-                <Link
-                  to="/admin/login"
-                  className="text-sm text-[#F0EDE8]/60 hover:text-[#C0392B]"
-                  style={{ fontFamily: "'DM Sans', sans-serif" }}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Admin
-                </Link>
-              </motion.div>
               {navLinks.map((link, i) => (
                 <motion.a
                   key={link.name}
